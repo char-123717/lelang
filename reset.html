@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reset Password - Premium Auction Room</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-logo {
+      font-size: 3em;
+      margin-bottom: 1rem;
+    }
+
+    .auth-title {
+      font-size: 2em;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-subtitle {
+      color: var(--gray-600);
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+      font-weight: 500;
+      font-size: 0.95em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-lg);
+      font-size: 1em;
+      outline: none;
+      transition: all var(--transition);
+      background: var(--white);
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.05em;
+      transition: all var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none !important;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      font-size: 0.95em;
+      display: none;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-error {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+      border-left: 4px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .alert-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border-left: 4px solid var(--success);
+      color: var(--success);
+    }
+
+    .password-toggle {
+      position: relative;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-500);
+      font-size: 1.2em;
+      padding: 0.25rem;
+      transition: color var(--transition);
+    }
+
+    .password-toggle-btn:hover {
+      color: var(--gray-700);
+    }
+
+    .warning-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+      border-left: 4px solid var(--warning);
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      color: var(--gray-700);
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+
+    .password-requirements {
+      margin-top: 0.5rem;
+      font-size: 0.85em;
+      color: var(--gray-600);
+      background: var(--gray-50);
+      padding: 0.75rem;
+      border-radius: var(--radius);
+    }
+
+    .password-requirements ul {
+      margin: 0.5rem 0 0 1.25rem;
+      padding: 0;
+    }
+
+    .password-requirements li {
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">🔑</div>
+        <h1 class="auth-title">Set New Password</h1>
+        <p class="auth-subtitle">
+          Please create a new password for your account
+        </p>
+      </div>
+
+      <div class="alert alert-error" id="errorMsg"></div>
+      <div class="alert alert-success" id="successMsg"></div>
+
+      <div class="warning-box">
+        ⚠️ <strong>Required:</strong> You must set a new password before continuing to use the platform.
+      </div>
+
+      <form id="resetForm">
+        <div class="form-group">
+          <label for="newPassword" class="form-label">New Password</label>
+          <div class="password-toggle">
+            <input 
+              type="password" 
+              id="newPassword" 
+              class="form-input" 
+              placeholder="••••••••"
+              required
+              autocomplete="new-password"
+              minlength="8"
+            />
+            <button type="button" class="password-toggle-btn" id="toggleNewPassword">
+              👁️
+            </button>
+          </div>
+          <div class="password-requirements">
+            <strong>Password must contain:</strong>
+            <ul>
+              <li>At least 8 characters</li>
+              <li>Mix of letters and numbers recommended</li>
+              <li>Must be different from temporary password</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm New Password</label>
+          <div class="password-toggle">
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              class="form-input" 
+              placeholder="••••••••"
+              required
+              autocomplete="new-password"
+            />
+            <button type="button" class="password-toggle-btn" id="toggleConfirmPassword">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">
+          Update Password
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Password toggles
+    document.getElementById('toggleNewPassword')?.addEventListener('click', function() {
+      const passwordInput = document.getElementById('newPassword');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    document.getElementById('toggleConfirmPassword')?.addEventListener('click', function() {
+      const passwordInput = document.getElementById('confirmPassword');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Auction Room - Live Bidding</title>
+  <meta name="description" content="Live auction room with real-time bidding using MetaMask">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Additional styles for auction room */
+    .auction-layout { 
+      display: flex; 
+      gap: 2rem; 
+      padding: 2rem 0; 
+    }
+    
+    .auction-item-panel { 
+      flex: 1; 
+      min-width: 320px;
+    }
+    
+    .bidding-panel { 
+      width: 420px; 
+      min-width: 320px;
+    }
+    
+    #bidList { 
+      list-style: none; 
+      padding: 0; 
+      margin: 0; 
+    }
+    
+    .bid-row { 
+      display: flex; 
+      gap: 0.75rem; 
+      align-items: center; 
+      padding: 0.75rem 0.5rem; 
+      border-bottom: 1px solid var(--gray-200); 
+    }
+    
+    .rank { 
+      width: 50px; 
+      font-weight: 700; 
+    }
+    
+    .bidder-address { 
+      flex: 1; 
+    }
+    
+    .address-display { 
+      width: 100%; 
+      min-width: 150px; 
+      padding: 0.5rem 0.75rem; 
+      border: 2px solid var(--gray-300); 
+      border-radius: var(--radius); 
+      font-size: 0.9em; 
+      background: var(--white); 
+      color: var(--gray-700); 
+      display: inline-block; 
+      box-sizing: border-box;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-weight: 500;
+    }
+    
+    .bid-amount { 
+      min-width: 110px; 
+      text-align: right; 
+      font-weight: 700;
+      color: var(--success);
+      font-size: 1.05em;
+    }
+    
+    .name-input { 
+      width: 100%; 
+      box-sizing: border-box; 
+      padding: 0.5rem 0.75rem; 
+    }
+    
+    .name-input[readonly] { 
+      background: var(--gray-100); 
+      border: 1px dashed var(--gray-300); 
+      color: var(--gray-600); 
+    }
+    
+    .status-info { 
+      margin-top: 1rem; 
+      color: var(--gray-600); 
+      font-size: 0.95em; 
+    }
+    
+    .btn { 
+      padding: 0.75rem 1.25rem; 
+      cursor: pointer; 
+    }
+    
+    .btn.secondary { 
+      background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+      color: var(--gray-700);
+    }
+
+    /* Item Description Styling */
+    .item-details {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      border-left: 4px solid var(--accent);
+    }
+
+    .item-details h3 {
+      font-size: 1.1em;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .item-details p {
+      color: var(--gray-600);
+      line-height: 1.7;
+    }
+
+    /* Progress Bar for Timer */
+    .timer-progress {
+      width: 100%;
+      height: 6px;
+      background: var(--gray-200);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .timer-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success) 0%, var(--accent) 100%);
+      transition: width 1s linear;
+      border-radius: var(--radius-full);
+    }
+
+    .timer-progress-bar.urgent {
+      background: linear-gradient(90deg, var(--danger) 0%, var(--warning) 100%);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    /* Wallet Info Display */
+    .wallet-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+      border-radius: var(--radius-lg);
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      margin-bottom: 1rem;
+    }
+
+    .wallet-icon {
+      font-size: 1.5em;
+    }
+
+    .wallet-details {
+      flex: 1;
+    }
+
+    .wallet-label {
+      font-size: 0.8em;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .wallet-address {
+      font-size: 0.95em;
+      font-weight: 600;
+      color: var(--primary);
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    /* Bid Input Enhancement - FIXED WIDTH */
+    .bid-input-group {
+      position: relative;
+      display: flex;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+
+    .bid-input-wrapper {
+      flex: 2.5;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .bid-input-wrapper::before {
+      content: 'ETH';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+      font-weight: 600;
+      font-size: 0.9em;
+      pointer-events: none;
+    }
+
+    #bidAmount {
+      width: 100%;
+      padding-right: 3.5rem;
+    }
+
+    /* Bid History Header */
+    .bid-history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .bid-history-title {
+      font-size: 1.4em;
+      color: var(--primary);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bid-count {
+      font-size: 0.7em;
+      background: var(--accent);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    /* No Bids State */
+    .no-bids {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-500);
+    }
+
+    .no-bids-icon {
+      font-size: 3em;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Success Animation */
+    @keyframes successPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 15px rgba(16, 185, 129, 0);
+      }
+    }
+
+    .bid-success {
+      animation: successPulse 0.6s ease-out;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .loading-content {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .loading-content .loading-spinner {
+      margin: 0 auto 1rem;
+    }
+
+    .loading-text {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    /* Responsive for mobile */
+    @media (max-width: 768px) {
+      .bid-input-wrapper {
+        flex: 1;
+        min-width: 100%;
+      }
+      
+      .bidder-panel > div {
+        flex-direction: column;
+      }
+      
+      #bidButton {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 id="auctionTitle">🏆 Live Auction</h1>
+      <div>
+        <div id="timer">—</div>
+        <div id="auctionStatus"></div>
+        <div id="participantInfo">—</div>
+        <a class="btn-leave" href="javascript:logout()" aria-label="Logout">🚪 Logout</a>
+      </div>
+    </header>
+
+    <main class="auction-layout">
+      <section class="auction-item-panel">
+        <h2 id="itemTitle">Auction Item</h2>
+        <img 
+          src="Images/Etherwave.png" 
+          alt="Auction Item" 
+          class="item-image"
+          loading="lazy"
+          width="500" 
+          height="500"
+          onerror="this.src='Images/fallback-image.png'; this.alt='Image not available';"
+        >
+        <div class="item-details">
+          <h3>📋 Description</h3>
+          <p id="itemDescription">
+            Exclusive item with high historical value. 
+            A rare opportunity to own a unique digital artwork verified on the blockchain.
+          </p>
+        </div>
+      </section>
+
+      <aside class="bidding-panel">
+        <div class="bid-history-header">
+          <div class="bid-history-title">
+            🏆 Leaderboard
+            <span class="bid-count" id="bidCount">0</span>
+          </div>
+        </div>
+        
+        <ul id="bidList">
+          <li class="no-bids">
+            <div class="no-bids-icon">🔭</div>
+            <p>No bidders yet.<br>Be the first!</p>
+          </li>
+        </ul>
+
+        <div id="bidActionBox" class="bid-action-box"></div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Template: Connect Wallet Panel -->
+  <template id="connect-wallet-panel-template">
+    <div class="connect-panel">
+      <h3>🔐 Connect Wallet</h3>
+      <p style="color: var(--gray-600); margin-bottom: 1.5rem; font-size: 0.95em;">
+        Connect your MetaMask to start bidding
+      </p>
+      <button id="connectWalletBtn" class="btn" aria-label="Connect MetaMask Wallet">
+        🦊 Connect MetaMask
+      </button>
+      <small style="display: block; margin-top: 1rem; color: var(--gray-500); font-size: 0.85em;">
+        Make sure you are connected to Sepolia Testnet
+      </small>
+    </div>
+  </template>
+
+  <!-- Template: Bidder Panel -->
+  <template id="bidder-panel-template">
+    <div class="bidder-panel">
+      <h3>💰 Place Your Bid</h3>
+      
+      <div class="wallet-info" id="walletInfo" style="display: none;">
+        <div class="wallet-icon">👛</div>
+        <div class="wallet-details">
+          <div class="wallet-label">Wallet Connected</div>
+          <div class="wallet-address" id="connectedWallet">—</div>
+        </div>
+      </div>
+
+      <div class="bid-input-group">
+        <div class="bid-input-wrapper">
+          <input 
+            id="bidAmount" 
+            type="number" 
+            step="0.0001" 
+            min="0.0001"
+            placeholder="0.01" 
+            aria-label="Bid amount in ETH"
+            autocomplete="off"
+          />
+        </div>
+        <button id="bidButton" class="btn" aria-label="Place bid">
+          💸 Place Bid
+        </button>
+      </div>
+
+      <button id="withdrawButton" class="btn secondary" style="width: 100%; margin-top: 0.75rem;" aria-label="Withdraw bid">
+        ↩️ Withdraw
+      </button>
+
+      <p id="status" class="status-info"></p>
+
+      <div style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius); border-left: 3px solid var(--info);">
+        <small style="color: var(--gray-600); line-height: 1.6;">
+          <strong>💡 Tips:</strong><br>
+          • First bid minimum: >0.0001 ETH<br>
+          • Subsequent bids: total accumulated bid must exceed current highest bid<br>
+          • You can place multiple bids to increase your total<br>
+          • Use withdraw to retrieve all your bids
+        </small>
+      </div>
+    </div>
+  </template>
+
+  <!-- Loading Overlay Template -->
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loadingText">Processing...</div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <script src="auth.js"></script>
+  <script src="https://unpkg.com/ethers@5.2.0/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.socket.io/4.5.2/socket.io.min.js"></script>
+  <script src="auction.js"></script>
+</body>
+</html>

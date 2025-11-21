@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Premium Auction Room - Live Auction Platform</title>
+  <meta name="description" content="Online auction platform with blockchain technology. Bid in real-time and win exclusive items.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Hero Section Styles */
+    .hero-section {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .hero-title {
+      font-size: 3em;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1a2332 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2em;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: 700;
+      color: #f59e0b;
+      text-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.5rem;
+    }
+
+    /* Section Header */
+    .section-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+
+    .section-title {
+      font-size: 2em;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-subtitle {
+      font-size: 1.1em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Loading State */
+    .loading-state {
+      text-align: center;
+      padding: 4rem 0;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .loading-spinner {
+      margin: 2rem auto;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .empty-icon {
+      font-size: 4em;
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-size: 1.5em;
+      color: #1a2332;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-text {
+      color: #6b7280;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: #f59e0b;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2em;
+      }
+
+      .hero-subtitle {
+        font-size: 1em;
+      }
+
+      .hero-stats {
+        gap: 1.5rem;
+      }
+
+      .stat-number {
+        font-size: 2em;
+      }
+
+      .section-title {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title">🏆 Premium Auction Room</h1>
+      <button class="btn-leave" onclick="logout()" aria-label="Logout">🚪 Logout</button>
+      <p class="hero-subtitle">Blockchain-based online auction platform with guaranteed security</p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number" id="activeAuctions">2</div>
+          <div class="stat-label">Active Auctions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="totalBidders">0</div>
+          <div class="stat-label">Total Bidders</div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Header -->
+    <section class="section-header">
+      <h2 class="section-title">Live Auctions</h2>
+      <p class="section-subtitle">Choose an auction and start bidding now</p>
+    </section>
+
+    <!-- Auction List -->
+    <main id="auction-list" class="auction-list-container">
+      <!-- Loading State -->
+      <div class="loading-state" id="loadingState" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Loading auctions...</p>
+      </div>
+
+      <!-- Auction Card 1: Etherwave -->
+      <div class="auction-card" data-auction-id="101">
+        <img src="Images/Etherwave.png" alt="Etherwave Painting" class="card-img" loading="lazy">
+        <div class="card-body">
+          <h3 class="card-title">🎨 "Etherwave" Painting</h3>
+          <div class="card-status-live">🟢 Live Now</div>
+          <div class="card-info">
+            <p>Highest Bid:</p>
+            <p class="price">0.0001 ETH</p>
+          </div>
+          <div class="card-info">
+            <p>Time Remaining:</p>
+            <p class="timer">—</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn-join" aria-label="Join bidding for Etherwave Painting">💰 Join Bid</button>
+            <button class="btn-watch" aria-label="Watch auction for Etherwave Painting">👁️ Watch</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auction Card 2: Satoshi Statue -->
+      <div class="auction-card" data-auction-id="102">
+        <img src="Images/Satoshi.png" alt="Satoshi Statue" class="card-img" loading="lazy">
+        <div class="card-body">
+          <h3 class="card-title">🗽 "Satoshi" Statue</h3>
+          <div class="card-status-live">🟢 Live Now</div>
+          <div class="card-info">
+            <p>Highest Bid:</p>
+            <p class="price">0.0001 ETH</p>
+          </div>
+          <div class="card-info">
+            <p>Time Remaining:</p>
+            <p class="timer">—</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn-join" aria-label="Join bidding for Satoshi Statue">💰 Join Bid</button>
+            <button class="btn-watch" aria-label="Watch auction for Satoshi Statue">👁️ Watch</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State (hidden by default) -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">🔭</div>
+        <h3 class="empty-title">No Active Auctions</h3>
+        <p class="empty-text">There are currently no active auctions. Please check back later.</p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <a href="#" class="footer-link">About Us</a>
+        <a href="#" class="footer-link">How It Works</a>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Contact</a>
+      </div>
+      <p>&copy; 2024 Premium Auction Room. Powered by Ethereum Blockchain.</p>
+    </footer>
+  </div>
+
+  <!-- Modal for name input -->
+  <div id="nameModal" class="modal-overlay" style="display:none;" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+    <div class="modal-content">
+      <h2 id="modalTitle">Enter Auction Room</h2>
+      <p style="color: #6b7280; margin-bottom: 1.5rem; font-size: 0.95em;">Enter your name to join</p>
+      <input 
+        type="text" 
+        id="participantName" 
+        placeholder="" 
+        maxlength="10"
+        aria-label="Participant name"
+        autocomplete="off"
+      />
+      <small style="display: block; color: #9ca3af; margin-bottom: 1.5rem; font-size: 0.85em;">
+        Maximum 10 characters, letters only
+      </small>
+      <div class="modal-actions">
+        <button id="modalConfirmButton" aria-label="Confirm and continue">✓ Continue</button>
+        <button id="modalCancelButton" aria-label="Cancel">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container (for notifications) -->
+  <div id="toastContainer" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 300;"></div>
+
+  <script src="auth.js"></script>
+  <script src="https://unpkg.com/ethers@5.2.0/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.socket.io/4.5.2/socket.io.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

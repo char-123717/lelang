@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Forgot Password - Premium Auction Room</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-logo {
+      font-size: 3em;
+      margin-bottom: 1rem;
+    }
+
+    .auth-title {
+      font-size: 2em;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-subtitle {
+      color: var(--gray-600);
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+      font-weight: 500;
+      font-size: 0.95em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-lg);
+      font-size: 1em;
+      outline: none;
+      transition: all var(--transition);
+      background: var(--white);
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.05em;
+      transition: all var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none !important;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+      color: var(--gray-600);
+      font-size: 0.95em;
+    }
+
+    .auth-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color var(--transition);
+    }
+
+    .auth-footer a:hover {
+      color: var(--accent-dark);
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      font-size: 0.95em;
+      display: none;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-error {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+      border-left: 4px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .alert-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border-left: 4px solid var(--success);
+      color: var(--success);
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+      border-left: 4px solid var(--info);
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      color: var(--gray-700);
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">🔐</div>
+        <h1 class="auth-title">Forgot Password</h1>
+        <p class="auth-subtitle">
+          Enter your email address and we'll send you a temporary password
+        </p>
+      </div>
+
+      <div class="alert alert-error" id="errorMsg"></div>
+      <div class="alert alert-success" id="successMsg"></div>
+
+      <div class="info-box">
+        ℹ️ You'll receive a temporary password via email. After signing in, you'll be required to set a new password.
+      </div>
+
+      <form id="forgotForm">
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            class="form-input" 
+            placeholder="you@example.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">
+          Send Temporary Password
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Remember your password? <a href="/signin.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+</body>
+</html>
