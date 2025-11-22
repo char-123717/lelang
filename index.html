@@ -12,6 +12,30 @@
       text-align: center;
       padding: 3rem 0 2rem;
       animation: fadeInUp 0.6s ease-out;
+      position: relative;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      transition: all var(--transition);
+      box-shadow: var(--shadow);
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     }
 
     .hero-title {
@@ -163,6 +187,13 @@
       .section-title {
         font-size: 1.5em;
       }
+
+      .logout-btn {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9em;
+      }
     }
   </style>
 </head>
@@ -170,8 +201,8 @@
   <div class="container">
     <!-- Hero Section -->
     <section class="hero-section">
+      <button class="logout-btn" onclick="logout()" aria-label="Logout">🚪 Logout</button>
       <h1 class="hero-title">🏆 Premium Auction Room</h1>
-      <button class="btn-leave" onclick="logout()" aria-label="Logout">🚪 Logout</button>
       <p class="hero-subtitle">Blockchain-based online auction platform with guaranteed security</p>
       <div class="hero-stats">
         <div class="stat-item">
