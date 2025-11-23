@@ -281,11 +281,11 @@ router.get('/verify-email', async (req, res) => {
 router.post('/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
-        
+
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
-        
+
         const user = await db.getUserByEmail(email);
 
         if (!user) {
@@ -295,27 +295,28 @@ router.post('/signin', async (req, res) => {
         if (!user.verified && user.provider === 'local') {
             return res.status(403).json({ error: 'Please verify your email before signing in' });
         }
-        
+
         const validPassword = await bcrypt.compare(password, user.password);
-        
+
         if (!validPassword) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
-        
+
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role }, 
-            JWT_SECRET, 
+            { id: user.id, email: user.email, role: user.role },
+            JWT_SECRET,
             { expiresIn: JWT_EXPIRY }
         );
-        
+
         const { password: _, ...userWithoutPassword } = user;
-        
-        res.json({ 
+
+        res.json({
             ok: true,
             token,
-            user: userWithoutPassword
+            user: userWithoutPassword,
+            requires_password_reset: user.requires_password_reset || false
         });
-        
+
     } catch (error) {
         console.error('Signin error:', error);
         res.status(500).json({ error: 'Internal server error' });

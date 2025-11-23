@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/signin.html';
             return;
         }
+
+        // Check if user needs to reset password (used temporary password)
+        const verifyData = await verifyResponse.json();
+        if (verifyData?.user?.requires_password_reset) {
+            window.location.href = '/reset.html';
+            return;
+        }
     } catch (error) {
         console.error('Token verification failed:', error);
         window.location.href = '/signin.html';

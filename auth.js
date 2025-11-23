@@ -99,9 +99,13 @@ function initSigninForm() {
                 localStorage.setItem('auction_user', JSON.stringify(data.user));
                 showSuccess(successMsg, 'Login successful! Redirecting...');
 
-                // REDIRECT KE LOBBY — INI YANG SEBELUMNYA HILANG!
+                // Jika perlu reset password (menggunakan temporary password), redirect ke reset.html
                 setTimeout(() => {
-                    window.location.href = '/';
+                    if (data.requires_password_reset) {
+                        window.location.href = '/reset.html';
+                    } else {
+                        window.location.href = '/';
+                    }
                 }, 800);
             } else {
                 showError(errorMsg, data.error || 'Login failed');

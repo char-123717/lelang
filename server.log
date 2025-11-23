@@ -1,0 +1,8 @@
+
+> premium-auction-platform@2.0.0 start
+> node server.js
+
+Supabase connected successfully: https://0ec90b57d6e95fcbda19832f.supabase.co
+Server berjalan di http://localhost:3000
+❌ Email transporter error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-2a6fc4f6671sm52292144eec.3 - gsmtp
